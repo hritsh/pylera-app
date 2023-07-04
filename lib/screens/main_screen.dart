@@ -26,9 +26,9 @@ class _MainScreenState extends State<MainScreen> {
           case 0:
             return HomePage();
           case 1:
-            return const SchedulePage();
+            return SchedulePage();
           case 2:
-            return const SettingsPage();
+            return SettingsPage();
           default:
             return Container();
         }

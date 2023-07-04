@@ -19,12 +19,26 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Show language dialog if locale is not set
     if (StorageService().read('locale') == null) {
-      // Show language dialog if locale is not set
       WidgetsBinding.instance.addPostFrameCallback((_) {
         buildLanguageDialog(context);
       });
     }
+
+    // Show enter name and age dialog if name or age are not set
+    if (StorageService().read('name') == null ||
+        StorageService().read('age') == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        buildNameAgeDialog(context);
+      });
+    }
+
+    // Uncomment to remove name, age and locale from storage
+    // print(StorageService().remove('name'));
+    // print(StorageService().remove('age'));
+    // print(StorageService().remove('locale'));
+
     return Scaffold(
       appBar: AppBar(
         title: Text('title'.tr),
@@ -34,7 +48,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${'welcome'.tr}, John",
+              "${'welcome'.tr}, ${StorageService().read('name') ?? ''}",
               style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(
@@ -64,11 +78,12 @@ class HomePage extends StatelessWidget {
 
   buildLanguageDialog(BuildContext context) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (builder) {
         return AlertDialog(
           title: Text('choose_your_language'.tr),
-          content: Container(
+          content: SizedBox(
             width: double.maxFinite,
             child: ListView.separated(
               shrinkWrap: true,
@@ -91,6 +106,50 @@ class HomePage extends StatelessWidget {
                 );
               },
               itemCount: locale.length,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  buildNameAgeDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (builder) {
+        return AlertDialog(
+          title: Text('your_details'.tr),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'enter_name'.tr,
+                  ),
+                  onChanged: (value) {
+                    StorageService().write('name', value);
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'enter_age'.tr,
+                  ),
+                  onChanged: (value) {
+                    StorageService().write('age', value);
+                  },
+                  // Only allow numbers
+                  keyboardType: TextInputType.number,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text('save'.tr),
+                ),
+              ],
             ),
           ),
         );
