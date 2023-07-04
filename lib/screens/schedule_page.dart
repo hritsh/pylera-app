@@ -14,8 +14,9 @@ class _SchedulePageState extends State<SchedulePage> {
         appBar: AppBar(title: const Text('Schedule Page')),
         body: const Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Schedule Page'),
+              Text('Schedule Page', style: TextStyle(fontSize: 20)),
             ],
           ),
         ));

@@ -6,6 +6,7 @@ class LocaleString extends Translations {
         // English
         'en_US': {
           'welcome': 'Welcome',
+          'learn_about': 'What do you want to learn about today?',
           'title': 'Pylera App',
           'home': 'Home',
           'name': 'Name',
@@ -25,6 +26,7 @@ class LocaleString extends Translations {
         // Arabic
         'ar_AR': {
           'welcome': 'مرحبا',
+          'learn_about': 'ماذا تريد أن تتعلم عنه اليوم؟',
           'title': 'Pylera App',
           'home': 'الصفحة الرئيسية',
           'name': 'الاسم',
@@ -44,6 +46,7 @@ class LocaleString extends Translations {
         // Urdu
         'ur_PK': {
           'welcome': 'خوش آمدید',
+          'learn_about': 'آپ آج کے بارے میں کیا سیکھنا چاہتے ہیں؟',
           'title': 'Pylera App',
           'home': 'ہوم',
           'name': 'نام',
