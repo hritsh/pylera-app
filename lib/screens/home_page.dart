@@ -27,10 +27,10 @@ class HomePage extends StatelessWidget {
     }
 
     // Show enter name and age dialog if name or age are not set
-    if (StorageService().read('name') == null ||
-        StorageService().read('age') == null) {
+    if (StorageService().read('firstName') == null ||
+        StorageService().read('lastName') == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        buildNameAgeDialog(context);
+        buildNameDialog(context);
       });
     }
 
@@ -48,28 +48,9 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${'welcome'.tr}, ${StorageService().read('name') ?? ''}",
+              "${'welcome'.tr}, ${StorageService().read('firstName') ?? ''} ${StorageService().read('lastName') ?? ''}",
               style: const TextStyle(fontSize: 20),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                buildLanguageDialog(context);
-              },
-              child: Text('change_language'.tr),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            // Unset locale from storage button
-            // ElevatedButton(
-            //   onPressed: () {
-            //     StorageService().remove('locale');
-            //   },
-            //   child: Text('unset_locale'.tr),
-            // ),
           ],
         ),
       ),
@@ -82,7 +63,7 @@ class HomePage extends StatelessWidget {
       context: context,
       builder: (builder) {
         return AlertDialog(
-          title: Text('choose_your_language'.tr),
+          title: Center(child: Text('choose_your_language'.tr)),
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.separated(
@@ -91,7 +72,12 @@ class HomePage extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
-                    child: Text(locale[index]['name']),
+                    child: Center(
+                      child: Text(
+                        locale[index]['flag'] + " " + locale[index]['name'],
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ),
                     onTap: () {
                       print(locale[index]['name']);
                       updateLanguage(locale[index]['locale']);
@@ -113,7 +99,10 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  buildNameAgeDialog(BuildContext context) {
+  buildNameDialog(BuildContext context) {
+    String firstName = '';
+    String lastName = '';
+
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -127,27 +116,36 @@ class HomePage extends StatelessWidget {
               children: [
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'enter_name'.tr,
+                    hintText: 'first_name'.tr,
                   ),
                   onChanged: (value) {
-                    StorageService().write('name', value);
+                    firstName = value;
                   },
                 ),
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'enter_age'.tr,
+                    hintText: 'last_name'.tr,
                   ),
                   onChanged: (value) {
-                    StorageService().write('age', value);
+                    lastName = value;
                   },
-                  // Only allow numbers
-                  keyboardType: TextInputType.number,
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Get.back();
+                    if (firstName.isNotEmpty && lastName.isNotEmpty) {
+                      StorageService().write('firstName', firstName);
+                      StorageService().write('lastName', lastName);
+                      Get.back();
+                    }
                   },
                   child: Text('save'.tr),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => (firstName.isNotEmpty && lastName.isNotEmpty)
+                          ? Colors.blue
+                          : Colors.grey,
+                    ),
+                  ),
                 ),
               ],
             ),

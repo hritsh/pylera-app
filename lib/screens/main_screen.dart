@@ -49,6 +49,9 @@ class _MainScreenState extends State<MainScreen> {
               icon: const Icon(Icons.settings), label: 'settings'.tr),
         ],
         enableFeedback: true,
+        backgroundColor: Colors.indigo,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white.withOpacity(0.5),
       ),
     );
   }
