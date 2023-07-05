@@ -21,6 +21,9 @@ class LocaleString extends Translations {
           'enter_name': 'Enter your name',
           'enter_age': 'Enter your age',
           'edit': 'Edit',
+          'reminder_set': 'Reminder Set',
+          'time': 'Time',
+          'time_set': 'Time Set',
         },
 
         // Arabic
@@ -41,6 +44,9 @@ class LocaleString extends Translations {
           'enter_name': 'أدخل اسمك',
           'enter_age': 'أدخل عمرك',
           'edit': 'تصحيح',
+          'reminder_set': 'تم تعيين التذكير',
+          'time': 'زمن',
+          'time_set': 'تم تعيين الوقت',
         },
 
         // Urdu
@@ -61,6 +67,9 @@ class LocaleString extends Translations {
           'enter_name': 'اپنا نام درج کریں',
           'enter_age': 'اپنی عمر درج کریں',
           'edit': 'ترمیم کریں',
+          'reminder_set': 'یاد دہانی کا شیڈول',
+          'time': 'وقت',
+          'time_set': 'وقت تعین کردیا گیا',
         },
       };
 }

@@ -15,6 +15,9 @@ class _SettingsPageState extends State<SettingsPage> {
   ];
   String firstName = StorageService().read('firstName') ?? '';
   String lastName = StorageService().read('lastName') ?? '';
+  bool reminderSet = StorageService().read('reminderSet') ?? false;
+  bool timeSet = StorageService().read('timeSet') ?? false;
+  List time = StorageService().read('time') ?? ['09', '00'];
 
   updateLanguage(Locale locale) {
     Get.back();
@@ -60,6 +63,86 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),
+
+            const SizedBox(
+              height: 10,
+            ),
+
+            // Reminder
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "${'reminder_set'.tr}:",
+                  style: const TextStyle(fontSize: 20),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Switch(
+                  value: reminderSet,
+                  onChanged: (value) {
+                    setState(() {
+                      reminderSet = value;
+                    });
+                    StorageService().write('reminderSet', value);
+                  },
+                ),
+              ],
+            ),
+
+            (timeSet)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${'time_set'.tr}:",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: (reminderSet) ? Colors.black : Colors.grey),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        _formatTime(int.parse(time[0] ?? '00'),
+                            int.parse(time[1] ?? '00')),
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: (reminderSet) ? Colors.black : Colors.grey),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: (!reminderSet)
+                            ? null
+                            : () {
+                                showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(
+                                      hour: int.parse(time[0] ?? '00'),
+                                      minute: int.parse(time[1] ?? '00')),
+                                ).then((value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      time = [
+                                        value.hour.toString(),
+                                        value.minute.toString()
+                                      ];
+                                      timeSet = true;
+                                      StorageService().write('timeSet', true);
+                                      StorageService().write('time', time);
+                                    });
+                                  }
+                                });
+                              },
+                        child: Text('edit'.tr),
+                      ),
+                    ],
+                  )
+                : Container(),
+
             const SizedBox(
               height: 10,
             ),
@@ -192,5 +275,21 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       },
     );
+  }
+
+  String _formatTime(int hour, int minute) {
+    String hourStr = hour.toString();
+    String minuteStr = minute.toString();
+    if (hour < 10) hourStr = '0$hourStr';
+    if (minute < 10) minuteStr = '0$minuteStr';
+
+    if (hour == 0) hourStr = '12';
+
+    if (hour < 12) {
+      return '$hourStr:$minuteStr AM';
+    } else {
+      hourStr = (hour - 12).toString();
+      return '$hourStr:$minuteStr PM';
+    }
   }
 }
