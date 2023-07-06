@@ -24,6 +24,8 @@ class LocaleString extends Translations {
           'reminder_set': 'Reminder Set',
           'time': 'Time',
           'time_set': 'Time Set',
+          'current_language': 'English',
+          'start_treatment': 'Start Treatment',
         },
 
         // Arabic
@@ -47,6 +49,8 @@ class LocaleString extends Translations {
           'reminder_set': 'تم تعيين التذكير',
           'time': 'زمن',
           'time_set': 'تم تعيين الوقت',
+          'current_language': 'العربية',
+          'start_treatment': 'بدء العلاج',
         },
 
         // Urdu
@@ -70,6 +74,8 @@ class LocaleString extends Translations {
           'reminder_set': 'یاد دہانی کا شیڈول',
           'time': 'وقت',
           'time_set': 'وقت تعین کردیا گیا',
+          'current_language': 'اردو',
+          'start_treatment': 'علاج شروع کریں',
         },
       };
 }

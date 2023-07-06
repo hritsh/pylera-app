@@ -44,14 +44,19 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
               icon: const Icon(Icons.home), label: 'home'.tr),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.calendar_today), label: 'schedule'.tr),
+              icon: const Icon(Icons.calendar_today),
+              label: 'start_treatment'.tr),
           BottomNavigationBarItem(
               icon: const Icon(Icons.settings), label: 'settings'.tr),
         ],
         enableFeedback: true,
-        backgroundColor: Colors.indigo,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white.withOpacity(0.5),
+        backgroundColor: Colors.white,
+        // golden #6F6C3A
+        selectedItemColor: Colors.indigo,
+        // top shadow
+        elevation: 10,
+        selectedFontSize: 14,
+        unselectedFontSize: 12,
       ),
     );
   }

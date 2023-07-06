@@ -3,12 +3,20 @@ import 'package:get/get.dart';
 import 'package:pylera_app/services/storage_service.dart';
 import 'package:pylera_app/screens/info_pages.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final List locale = [
-    {'name': 'ENGLISH', 'locale': const Locale('en', 'US')},
-    {'name': 'عربى', 'locale': const Locale('ar', 'AR')},
-    {'name': 'اردو', 'locale': const Locale('ur', 'PK')},
+    {'name': 'English', 'locale': const Locale('en', 'US'), 'flag': '🇺🇸'},
+    {'name': 'عربى', 'locale': const Locale('ar', 'AR'), 'flag': '🇸🇦'},
+    {'name': 'اردو', 'locale': const Locale('ur', 'PK'), 'flag': '🇵🇰'},
   ];
+
+  String firstName = StorageService().read('firstName') ?? '';
+  String lastName = StorageService().read('lastName') ?? '';
 
   updateLanguage(Locale locale) {
     Get.back();
@@ -42,14 +50,34 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('title'.tr),
+        title: Image.asset(
+          'assets/images/newbridge_logo.png',
+          width: 200,
+        ),
+        toolbarHeight: 100,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: () {
+              buildLanguageDialog(context);
+            },
+          ),
+        ],
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // newbridge_logo.png is in assets/images folder
+            // Image.asset(
+            //   'assets/images/newbridge_logo.png',
+            //   width: 200,
+            // ),
+            SizedBox(height: 20),
             Text(
-              "welcome".tr + ", " + StorageService().read('firstName'),
+              "welcome".tr + ", " + firstName,
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -62,19 +90,18 @@ class HomePage extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             GestureDetector(
               onTap: () {
                 Get.to(() => HPyloriInfo());
               },
               child: Container(
-                width: 300,
+                width: 350,
                 height: 250,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    image: NetworkImage(
-                        "https://d2jx2rerrg6sh3.cloudfront.net/image-handler/picture/2018/7/shutterstock_586012724.jpg"),
+                    image: Image.asset('assets/images/hpylori_3.webp').image,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -98,6 +125,12 @@ class HomePage extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 5,
+                              color: Colors.black,
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(height: 30),
@@ -106,19 +139,18 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             GestureDetector(
               onTap: () {
                 Get.to(() => PyleraInfo());
               },
               child: Container(
-                width: 300,
+                width: 350,
                 height: 250,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    image: NetworkImage(
-                        "https://www.grxstatic.com/d4fuqqd5l3dbz/products/cwf_tms/Package_22082.PNG"),
+                    image: Image.asset('assets/images/pylera_1.webp').image,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -142,6 +174,12 @@ class HomePage extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 5,
+                              color: Colors.black,
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(height: 30),
@@ -199,56 +237,77 @@ class HomePage extends StatelessWidget {
   }
 
   buildNameDialog(BuildContext context) {
-    String firstName = '';
-    String lastName = '';
+    final firstNameController = TextEditingController(text: firstName);
+    final lastNameController = TextEditingController(text: lastName);
 
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (builder) {
-        return AlertDialog(
-          title: Text('your_details'.tr),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'first_name'.tr,
-                  ),
-                  onChanged: (value) {
-                    firstName = value;
-                  },
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'last_name'.tr,
-                  ),
-                  onChanged: (value) {
-                    lastName = value;
-                  },
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (firstName.isNotEmpty && lastName.isNotEmpty) {
-                      StorageService().write('firstName', firstName);
-                      StorageService().write('lastName', lastName);
-                      Get.back();
-                    }
-                  },
-                  child: Text('save'.tr),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith(
-                      (states) => (firstName.isNotEmpty && lastName.isNotEmpty)
-                          ? Colors.blue
-                          : Colors.grey,
+        return StatefulBuilder(
+          builder: (context, newSetState) {
+            return AlertDialog(
+              title: Text('your_details'.tr),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'first_name'.tr,
+                      ),
+                      controller: firstNameController,
+                      onChanged: (value) {
+                        newSetState(() {
+                          firstName = value;
+                        });
+                      },
                     ),
-                  ),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'last_name'.tr,
+                      ),
+                      controller: lastNameController,
+                      onChanged: (value) {
+                        newSetState(() {
+                          lastName = value;
+                        });
+                      },
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (firstName.isNotEmpty && lastName.isNotEmpty) {
+                          StorageService()
+                              .write('firstName', firstNameController.text);
+                          StorageService()
+                              .write('lastName', lastNameController.text);
+                          setState(() {
+                            firstName = firstNameController.text;
+                            lastName = lastNameController.text;
+                          });
+                          newSetState(() {
+                            firstName = firstNameController.text;
+                            lastName = lastNameController.text;
+                          });
+                          Get.back();
+                        }
+                      },
+                      child: Text('save'.tr),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                          (states) =>
+                              (firstName.isNotEmpty && lastName.isNotEmpty)
+                                  ? Colors.indigo
+                                  : Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );

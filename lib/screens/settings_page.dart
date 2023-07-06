@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pylera_app/services/storage_service.dart';
 
@@ -33,129 +34,78 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text('settings'.tr),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Name
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "${'name'.tr}:",
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  '$firstName $lastName',
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    buildNameDialog(context);
-                  },
-                  child: Text('edit'.tr),
-                ),
-              ],
-            ),
-
-            const SizedBox(
-              height: 10,
-            ),
-
-            // Reminder
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "${'reminder_set'.tr}:",
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Switch(
-                  value: reminderSet,
-                  onChanged: (value) {
-                    setState(() {
-                      reminderSet = value;
-                    });
-                    StorageService().write('reminderSet', value);
-                  },
-                ),
-              ],
-            ),
-
-            (timeSet)
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "${'time_set'.tr}:",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: (reminderSet) ? Colors.black : Colors.grey),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        _formatTime(int.parse(time[0] ?? '00'),
-                            int.parse(time[1] ?? '00')),
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: (reminderSet) ? Colors.black : Colors.grey),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      ElevatedButton(
-                        onPressed: (!reminderSet)
-                            ? null
-                            : () {
-                                showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay(
-                                      hour: int.parse(time[0] ?? '00'),
-                                      minute: int.parse(time[1] ?? '00')),
-                                ).then((value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      time = [
-                                        value.hour.toString(),
-                                        value.minute.toString()
-                                      ];
-                                      timeSet = true;
-                                      StorageService().write('timeSet', true);
-                                      StorageService().write('time', time);
-                                    });
-                                  }
-                                });
-                              },
-                        child: Text('edit'.tr),
-                      ),
-                    ],
-                  )
-                : Container(),
-
-            const SizedBox(
-              height: 10,
-            ),
-
-            // Locale
-            ElevatedButton(
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text('name'.tr),
+            subtitle: Text('$firstName $lastName'),
+            trailing: ElevatedButton(
               onPressed: () {
-                buildLanguageDialog(context);
+                buildNameDialog(context);
               },
-              child: Text('change_language'.tr),
+              child: Text('edit'.tr),
             ),
-          ],
-        ),
+          ),
+          Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          ListTile(
+            title: Text('reminder_set'.tr),
+            trailing: CupertinoSwitch(
+              value: reminderSet,
+              onChanged: (value) {
+                setState(() {
+                  reminderSet = value;
+                });
+                StorageService().write('reminderSet', value);
+              },
+            ),
+          ),
+          if (timeSet) Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          if (timeSet)
+            ListTile(
+              title: Text('time_set'.tr,
+                  style: TextStyle(
+                      color: (reminderSet) ? Colors.black : Colors.grey)),
+              subtitle: Text(
+                _formatTime(
+                    int.parse(time[0] ?? '00'), int.parse(time[1] ?? '00')),
+              ),
+              trailing: ElevatedButton(
+                onPressed: (!reminderSet)
+                    ? null
+                    : () {
+                        showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay(
+                              hour: int.parse(time[0] ?? '00'),
+                              minute: int.parse(time[1] ?? '00')),
+                        ).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              time = [
+                                value.hour.toString(),
+                                value.minute.toString()
+                              ];
+                              timeSet = true;
+                              StorageService().write('timeSet', true);
+                              StorageService().write('time', time);
+                            });
+                          }
+                        });
+                      },
+                child: Text('edit'.tr),
+              ),
+            ),
+          Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          ListTile(
+            title: Text('change_language'.tr),
+            subtitle: Text('current_language'.tr),
+            trailing: Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              buildLanguageDialog(context);
+            },
+          ),
+          Divider(color: Colors.grey, indent: 15, endIndent: 15),
+        ],
       ),
     );
   }
