@@ -11,7 +11,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final _currentIndex = 0.obs;
+  final currentIndex = 0.obs;
 
   @override
   void initState() {
@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        switch (_currentIndex.value) {
+        switch (currentIndex.value) {
           case 0:
             return HomePage();
           case 1:
@@ -34,10 +34,10 @@ class _MainScreenState extends State<MainScreen> {
         }
       }),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex.value,
+        currentIndex: currentIndex.value,
         onTap: (index) {
           setState(() {
-            _currentIndex.value = index;
+            currentIndex.value = index;
           });
         },
         items: [

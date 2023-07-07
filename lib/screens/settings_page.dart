@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:pylera_app/screens/main_screen.dart';
 import 'package:pylera_app/services/storage_service.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -105,6 +106,14 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          ListTile(
+            title: Text('logout'.tr, style: TextStyle(color: Colors.red)),
+            trailing: Icon(Icons.logout, color: Colors.red),
+            onTap: () {
+              StorageService().clear();
+              Get.offAll(() => MainScreen());
+            },
+          )
         ],
       ),
     );

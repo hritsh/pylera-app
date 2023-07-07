@@ -26,27 +26,25 @@ class _HomePageState extends State<HomePage> {
         .write('locale', [locale.languageCode, locale.countryCode]);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // Show language dialog if locale is not set
+  setUp() {
     if (StorageService().read('locale') == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        buildLanguageDialog(context);
+        buildLanguageDialog(context).then((value) {
+          buildNameDialog(context);
+        });
       });
     }
+  }
 
-    // Show enter name and age dialog if name or age are not set
-    if (StorageService().read('firstName') == null ||
-        StorageService().read('lastName') == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        buildNameDialog(context);
-      });
-    }
-
+  @override
+  Widget build(BuildContext context) {
     // Uncomment to remove name, age and locale from storage
     // print(StorageService().remove('name'));
     // print(StorageService().remove('age'));
     // print(StorageService().remove('locale'));
+
+    // Show language dialog if locale or name is not set
+    setUp();
 
     return Scaffold(
       appBar: AppBar(
@@ -194,8 +192,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  buildLanguageDialog(BuildContext context) {
-    showDialog(
+  Future buildLanguageDialog(BuildContext context) {
+    return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (builder) {
@@ -236,11 +234,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  buildNameDialog(BuildContext context) {
+  Future buildNameDialog(BuildContext context) {
     final firstNameController = TextEditingController(text: firstName);
     final lastNameController = TextEditingController(text: lastName);
 
-    showDialog(
+    return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (builder) {

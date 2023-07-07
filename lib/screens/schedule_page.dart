@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pylera_app/services/notification_service.dart';
 import 'package:pylera_app/services/storage_service.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -13,6 +14,13 @@ class _SchedulePageState extends State<SchedulePage> {
   bool reminderSet = StorageService().read('reminderSet') ?? false;
   bool timeSet = StorageService().read('timeSet') ?? false;
   List time = StorageService().read('time') ?? ['09', '00'];
+  List times = StorageService().read('times') ??
+      [
+        ['10', '00'],
+        ['13', '00'],
+        ['16', '00'],
+        ['19', '00']
+      ];
   bool hasReadWarnings = false;
 
   @override
@@ -207,7 +215,7 @@ class _SchedulePageState extends State<SchedulePage> {
           ListTile(
             leading: Icon(Icons.info, color: Colors.blue),
             title: Text(
-              'Please select the starting date and time for your first dose.',
+              'Please select the starting date and time for your first dose. (Breakfast time is recommended.)',
               style: TextStyle(fontSize: 16.0),
             ),
           ),
@@ -233,6 +241,10 @@ class _SchedulePageState extends State<SchedulePage> {
               setState(() {
                 timeSet = true;
                 StorageService().write('timeSet', true);
+                NotificationService().scheduleNotification(
+                    scheduledNotificationDateTime:
+                        DateTime.now().add(Duration(seconds: 5)),
+                    title: "hello");
               });
             },
             child: Text('Set Date and Time'),
@@ -341,6 +353,25 @@ class _SchedulePageState extends State<SchedulePage> {
           onPressed: () {
             if (hasReadWarnings) {
               setState(() {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Important Dosage Information'),
+                      content: SingleChildScrollView(
+                        child: _dosageInfo(),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
+                );
                 reminderSet = true;
                 StorageService().write('reminderSet', true);
                 hasReadWarnings = false;
