@@ -20,7 +20,9 @@ class _SettingsPageState extends State<SettingsPage> {
   String lastName = StorageService().read('lastName') ?? '';
   bool reminderSet = StorageService().read('reminderSet') ?? false;
   bool timeSet = StorageService().read('timeSet') ?? false;
-  List time = StorageService().read('time') ?? ['09', '00'];
+  // List time = StorageService().read('time') ?? ['09', '00'];
+  List date = StorageService().read('date') ?? null;
+  List endDate = StorageService().read('endDate') ?? null;
 
   updateLanguage(Locale locale) {
     Get.back();
@@ -48,19 +50,21 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Text('edit'.tr),
             ),
           ),
-          Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          const Divider(color: Colors.grey, indent: 15, endIndent: 15),
           ListTile(
             title: Text('reminder_set'.tr),
             trailing: CupertinoSwitch(
               value: reminderSet,
               onChanged: (value) {
-                setState(() {
-                  reminderSet = value;
-                });
                 if (!value) {
                   NotificationService().cancelAllNotifications();
-                }
-                StorageService().write('reminderSet', value);
+                  setState(() {
+                    reminderSet = value;
+                    timeSet = value;
+                    StorageService().write('reminderSet', value);
+                    StorageService().write('timeSet', value);
+                  });
+                } else {}
               },
             ),
           ),
@@ -100,19 +104,19 @@ class _SettingsPageState extends State<SettingsPage> {
           //       child: Text('edit'.tr),
           //     ),
           //   ),
-          Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          const Divider(color: Colors.grey, indent: 15, endIndent: 15),
           ListTile(
             title: Text('change_language'.tr),
             subtitle: Text('current_language'.tr),
-            trailing: Icon(Icons.arrow_forward_ios),
+            trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
               buildLanguageDialog(context);
             },
           ),
-          Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          const Divider(color: Colors.grey, indent: 15, endIndent: 15),
           ListTile(
-            title: Text('logout'.tr, style: TextStyle(color: Colors.red)),
-            trailing: Icon(Icons.logout, color: Colors.red),
+            title: Text('logout'.tr, style: const TextStyle(color: Colors.red)),
+            trailing: const Icon(Icons.logout, color: Colors.red),
             onTap: () {
               StorageService().clear();
               NotificationService().cancelAllNotifications();

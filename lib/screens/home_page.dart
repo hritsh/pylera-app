@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         toolbarHeight: 100,
         actions: [
           IconButton(
-            icon: Icon(Icons.language),
+            icon: const Icon(Icons.language),
             onPressed: () {
               buildLanguageDialog(context);
             },
@@ -73,25 +73,25 @@ class _HomePageState extends State<HomePage> {
             //   'assets/images/newbridge_logo.png',
             //   width: 200,
             // ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
-              "welcome".tr + ", " + firstName,
-              style: TextStyle(
+              "${"welcome".tr}, $firstName",
+              style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               "learn_about".tr,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             GestureDetector(
               onTap: () {
-                Get.to(() => HPyloriInfo());
+                Get.to(() => const HPyloriInfo());
               },
               child: Container(
                 width: 350,
@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  child: Column(
+                  child: const Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
@@ -137,10 +137,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             GestureDetector(
               onTap: () {
-                Get.to(() => PyleraInfo());
+                Get.to(() => const PyleraInfo());
               },
               child: Container(
                 width: 350,
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  child: Column(
+                  child: const Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(

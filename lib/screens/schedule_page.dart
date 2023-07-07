@@ -58,7 +58,7 @@ class _SchedulePageState extends State<SchedulePage>
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             (reminderSet)
                 ? (timeSet)
                     ? _buildReminderSetWidget()
@@ -75,27 +75,27 @@ class _SchedulePageState extends State<SchedulePage>
       child: Column(
         children: [
           ListTile(
-            title: Text(
+            title: const Text(
               'Dosage Reminders on',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
                 'Reminders set for ${times.map((e) => _formatTime(int.parse(e[0]), int.parse(e[1]))).toList().join(', ')} daily, starting from ${date[2]}/${date[1]}/${date[0]} till ${endDate[2]}/${endDate[1]}/${endDate[0]}.'),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            title: Text('PYLERA Dos and Don\'ts'),
-            subtitle: Text(
+            title: const Text('PYLERA Dos and Don\'ts'),
+            subtitle: const Text(
                 'Make sure you follow the instructions carefully to ensure the best treatment outcome.'),
             trailing: IconButton(
-              icon: Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outline),
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('PYLERA Dos and Don\'ts'),
-                      content: SingleChildScrollView(
+                      title: const Text('PYLERA Dos and Don\'ts'),
+                      content: const SingleChildScrollView(
                         child: ListBody(
                           children: [
                             Text('• Each dose of PYLERA includes 3 capsules.'),
@@ -115,7 +115,7 @@ class _SchedulePageState extends State<SchedulePage>
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('OK'),
+                          child: const Text('OK'),
                         ),
                       ],
                     );
@@ -124,20 +124,20 @@ class _SchedulePageState extends State<SchedulePage>
               },
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            title: Text('Pylera-related Advices'),
-            subtitle: Text(
+            title: const Text('Pylera-related Advices'),
+            subtitle: const Text(
                 'Make sure to follow these advices to ensure the best treatment outcome.'),
             trailing: IconButton(
-              icon: Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outline),
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Pylera-related Advices'),
-                      content: SingleChildScrollView(
+                      title: const Text('Pylera-related Advices'),
+                      content: const SingleChildScrollView(
                         child: ListBody(
                           children: [
                             Text(
@@ -154,7 +154,7 @@ class _SchedulePageState extends State<SchedulePage>
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('OK'),
+                          child: const Text('OK'),
                         ),
                       ],
                     );
@@ -163,11 +163,11 @@ class _SchedulePageState extends State<SchedulePage>
               },
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            title: Text('Cancel Reminders'),
+            title: const Text('Cancel Reminders'),
             trailing: IconButton(
-              icon: Icon(Icons.cancel),
+              icon: const Icon(Icons.cancel),
               onPressed: () {
                 setState(() {
                   reminderSet = false;
@@ -196,15 +196,15 @@ class _SchedulePageState extends State<SchedulePage>
     return Card(
       child: Column(
         children: [
-          ListTile(
+          const ListTile(
             title: Text(
               'Set Reminder Time',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
           ),
-          Divider(),
+          const Divider(),
           // important info listtyle
-          ListTile(
+          const ListTile(
             leading: Icon(Icons.info, color: Colors.red),
             title: Text(
               'Please read the following information before setting a reminder.',
@@ -213,16 +213,16 @@ class _SchedulePageState extends State<SchedulePage>
           ),
           // important info card on tap
           ListTile(
-            title: Text('Important Dosage Information'),
-            subtitle: Text('Click the (i) icon to view.'),
+            title: const Text('Important Dosage Information'),
+            subtitle: const Text('Click the (i) icon to view.'),
             trailing: IconButton(
-              icon: Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outline),
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Important Dosage Information'),
+                      title: const Text('Important Dosage Information'),
                       content: SingleChildScrollView(
                         child: _dosageInfo(),
                       ),
@@ -231,7 +231,7 @@ class _SchedulePageState extends State<SchedulePage>
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('OK'),
+                          child: const Text('OK'),
                         ),
                       ],
                     );
@@ -240,7 +240,7 @@ class _SchedulePageState extends State<SchedulePage>
               },
             ),
           ),
-          Divider(),
+          const Divider(),
 
           // cupertino datetime picker
 
@@ -254,7 +254,7 @@ class _SchedulePageState extends State<SchedulePage>
                   onTap: (value) => setState(() {
                     _tabController.index = value;
                   }),
-                  tabs: [
+                  tabs: const [
                     Tab(text: 'Breakfast'),
                     Tab(text: 'Lunch'),
                     Tab(text: 'Dinner'),
@@ -269,7 +269,7 @@ class _SchedulePageState extends State<SchedulePage>
                     children: [
                       Column(
                         children: [
-                          ListTile(
+                          const ListTile(
                             leading: Icon(Icons.info, color: Colors.blue),
                             title: Text(
                               'Please select the starting date and time for your first dose. (Breakfast time)',
@@ -308,7 +308,7 @@ class _SchedulePageState extends State<SchedulePage>
                       ),
                       Column(
                         children: [
-                          ListTile(
+                          const ListTile(
                             leading: Icon(Icons.info, color: Colors.blue),
                             title: Text(
                               'Please select the time for your second dose. (Lunch time)',
@@ -338,7 +338,7 @@ class _SchedulePageState extends State<SchedulePage>
                       ),
                       Column(
                         children: [
-                          ListTile(
+                          const ListTile(
                             leading: Icon(Icons.info, color: Colors.blue),
                             title: Text(
                               'Please select the time for your third dose. (Dinner time)',
@@ -368,7 +368,7 @@ class _SchedulePageState extends State<SchedulePage>
                       ),
                       Column(
                         children: [
-                          ListTile(
+                          const ListTile(
                             leading: Icon(Icons.info, color: Colors.blue),
                             title: Text(
                               'Please select the time for your fourth dose. (Bedtime)',
@@ -410,7 +410,7 @@ class _SchedulePageState extends State<SchedulePage>
                       _tabController.index++;
                     });
                   },
-                  child: Text('Next'),
+                  child: const Text('Next'),
                 )
               : ElevatedButton(
                   onPressed: () {
@@ -423,10 +423,10 @@ class _SchedulePageState extends State<SchedulePage>
                       StorageService().write('timeSet', true);
                     });
                   },
-                  child: Text('Schedule Dosage Reminders'),
+                  child: const Text('Schedule Dosage Reminders'),
                 ),
 
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
         ],
       ),
     );
@@ -439,24 +439,24 @@ class _SchedulePageState extends State<SchedulePage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 8.0),
-            Text(
+            const SizedBox(height: 8.0),
+            const Text(
               'Start Treatment',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
-            ListTile(
+            const SizedBox(height: 8.0),
+            const ListTile(
               leading: Icon(Icons.warning, color: Colors.red),
               title: Text(
                 'Please read the warnings before starting treatment.',
                 style: TextStyle(fontSize: 16.0),
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             _buildWarningsWidget(),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             _buildCheckboxWidget(),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             _buildStartTreatmentButton(),
           ],
         ),
@@ -467,8 +467,8 @@ class _SchedulePageState extends State<SchedulePage>
   Widget _buildWarningsWidget() {
     return Card(
       color: Colors.yellow[100],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      child: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -501,11 +501,11 @@ class _SchedulePageState extends State<SchedulePage>
     return Row(
       children: [
         Expanded(child: Container()),
-        Text(
+        const Text(
           'I have read and understood the warnings',
           style: TextStyle(fontSize: 16.0),
         ),
-        SizedBox(width: 8.0),
+        const SizedBox(width: 8.0),
         Checkbox(
           value: hasReadWarnings,
           onChanged: (value) {
@@ -533,7 +533,7 @@ class _SchedulePageState extends State<SchedulePage>
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Important Dosage Information'),
+                    title: const Text('Important Dosage Information'),
                     content: SingleChildScrollView(
                       child: _dosageInfo(),
                     ),
@@ -542,7 +542,7 @@ class _SchedulePageState extends State<SchedulePage>
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text('OK'),
+                        child: const Text('OK'),
                       ),
                     ],
                   );
@@ -559,15 +559,15 @@ class _SchedulePageState extends State<SchedulePage>
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text('Error'),
-                    content: Text(
+                    title: const Text('Error'),
+                    content: const Text(
                         'Please read and acknowledge the warnings before starting treatment.'),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('OK'),
+                        child: const Text('OK'),
                       ),
                     ],
                   );
@@ -575,7 +575,7 @@ class _SchedulePageState extends State<SchedulePage>
               );
             }
           },
-          child: Text('Start Treatment'),
+          child: const Text('Start Treatment'),
         ),
       ],
     );
@@ -584,8 +584,8 @@ class _SchedulePageState extends State<SchedulePage>
   Widget _dosageInfo() {
     return Card(
       color: Colors.yellow[100],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      child: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
