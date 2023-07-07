@@ -64,42 +64,42 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
-          if (timeSet) Divider(color: Colors.grey, indent: 15, endIndent: 15),
-          if (timeSet)
-            ListTile(
-              title: Text('time_set'.tr,
-                  style: TextStyle(
-                      color: (reminderSet) ? Colors.black : Colors.grey)),
-              subtitle: Text(
-                _formatTime(
-                    int.parse(time[0] ?? '00'), int.parse(time[1] ?? '00')),
-              ),
-              trailing: ElevatedButton(
-                onPressed: (!reminderSet)
-                    ? null
-                    : () {
-                        showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay(
-                              hour: int.parse(time[0] ?? '00'),
-                              minute: int.parse(time[1] ?? '00')),
-                        ).then((value) {
-                          if (value != null) {
-                            setState(() {
-                              time = [
-                                value.hour.toString(),
-                                value.minute.toString()
-                              ];
-                              timeSet = true;
-                              StorageService().write('timeSet', true);
-                              StorageService().write('time', time);
-                            });
-                          }
-                        });
-                      },
-                child: Text('edit'.tr),
-              ),
-            ),
+          // if (timeSet) Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          // if (timeSet)
+          //   ListTile(
+          //     title: Text('time_set'.tr,
+          //         style: TextStyle(
+          //             color: (reminderSet) ? Colors.black : Colors.grey)),
+          //     subtitle: Text(
+          //       _formatTime(
+          //           int.parse(time[0] ?? '00'), int.parse(time[1] ?? '00')),
+          //     ),
+          //     trailing: ElevatedButton(
+          //       onPressed: (!reminderSet)
+          //           ? null
+          //           : () {
+          //               showTimePicker(
+          //                 context: context,
+          //                 initialTime: TimeOfDay(
+          //                     hour: int.parse(time[0] ?? '00'),
+          //                     minute: int.parse(time[1] ?? '00')),
+          //               ).then((value) {
+          //                 if (value != null) {
+          //                   setState(() {
+          //                     time = [
+          //                       value.hour.toString(),
+          //                       value.minute.toString()
+          //                     ];
+          //                     timeSet = true;
+          //                     StorageService().write('timeSet', true);
+          //                     StorageService().write('time', time);
+          //                   });
+          //                 }
+          //               });
+          //             },
+          //       child: Text('edit'.tr),
+          //     ),
+          //   ),
           Divider(color: Colors.grey, indent: 15, endIndent: 15),
           ListTile(
             title: Text('change_language'.tr),

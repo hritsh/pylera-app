@@ -11,7 +11,8 @@ class SchedulePage extends StatefulWidget {
   State<SchedulePage> createState() => _SchedulePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+class _SchedulePageState extends State<SchedulePage>
+    with SingleTickerProviderStateMixin {
   bool reminderSet = StorageService().read('reminderSet') ?? false;
   bool timeSet = StorageService().read('timeSet') ?? false;
   List date = [
@@ -33,6 +34,19 @@ class _SchedulePageState extends State<SchedulePage> {
         ['19', '00']
       ];
   bool hasReadWarnings = false;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: 4);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +80,7 @@ class _SchedulePageState extends State<SchedulePage> {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-                'Reminders set for ${times.map((e) => _formatTime(int.parse(e[0]), int.parse(e[1]))).toList().join(', ')} daily, starting from ${date[2]}/${date[1]}/${date[0]} till ${endDate[2]}/${endDate[1]}/${endDate[0]}'),
+                'Reminders set for ${times.map((e) => _formatTime(int.parse(e[0]), int.parse(e[1]))).toList().join(', ')} daily, starting from ${date[2]}/${date[1]}/${date[0]} till ${endDate[2]}/${endDate[1]}/${endDate[0]}.'),
           ),
           Divider(),
           ListTile(
@@ -227,60 +241,191 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
           ),
           Divider(),
-          ListTile(
-            leading: Icon(Icons.info, color: Colors.blue),
-            title: Text(
-              'Please select the starting date and time for your first dose. (Breakfast time is recommended.)',
-              style: TextStyle(fontSize: 16.0),
-            ),
-          ),
+
           // cupertino datetime picker
-          Container(
-            height: 200,
-            child: CupertinoDatePicker(
-              mode: CupertinoDatePickerMode.dateAndTime,
-              minimumDate: DateTime.now(),
-              initialDateTime: DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day + 1, 10, 0),
-              onDateTimeChanged: (value) {
-                setState(() {
-                  times[0][0] = value.hour.toString();
-                  times[0][1] = value.minute.toString();
-                  date[0] = value.year.toString();
-                  date[1] = value.month.toString();
-                  date[2] = value.day.toString();
-                  endDate[0] = value.year.toString();
-                  endDate[1] = value.month.toString();
-                  endDate[2] = (value.day + 9).toString();
-                  StorageService().write('times', times);
-                  StorageService().write('date', date);
-                  StorageService().write('endDate', endDate);
-                });
-              },
+
+          // tab bar with time picker for the other 3 times
+          DefaultTabController(
+            length: 4,
+            child: Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  onTap: (value) => setState(() {
+                    _tabController.index = value;
+                  }),
+                  tabs: [
+                    Tab(text: 'Breakfast'),
+                    Tab(text: 'Lunch'),
+                    Tab(text: 'Dinner'),
+                    Tab(text: 'Bedtime'),
+                  ],
+                  labelColor: Colors.indigo,
+                ),
+                Container(
+                  height: 275,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      Column(
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.info, color: Colors.blue),
+                            title: Text(
+                              'Please select the starting date and time for your first dose. (Breakfast time)',
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            child: CupertinoDatePicker(
+                              mode: CupertinoDatePickerMode.dateAndTime,
+                              minimumDate: DateTime.now(),
+                              initialDateTime: DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day + 1,
+                                  10,
+                                  0),
+                              onDateTimeChanged: (value) {
+                                setState(() {
+                                  times[0][0] = value.hour.toString();
+                                  times[0][1] = value.minute.toString();
+                                  date[0] = value.year.toString();
+                                  date[1] = value.month.toString();
+                                  date[2] = value.day.toString();
+                                  endDate[0] = value.year.toString();
+                                  endDate[1] = value.month.toString();
+                                  endDate[2] = (value.day + 9).toString();
+                                  StorageService().write('times', times);
+                                  StorageService().write('date', date);
+                                  StorageService().write('endDate', endDate);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.info, color: Colors.blue),
+                            title: Text(
+                              'Please select the time for your second dose. (Lunch time)',
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            child: CupertinoDatePicker(
+                              mode: CupertinoDatePickerMode.time,
+                              initialDateTime: DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  13,
+                                  0),
+                              onDateTimeChanged: (value) {
+                                setState(() {
+                                  times[1][0] = value.hour.toString();
+                                  times[1][1] = value.minute.toString();
+                                  StorageService().write('times', times);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.info, color: Colors.blue),
+                            title: Text(
+                              'Please select the time for your third dose. (Dinner time)',
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            child: CupertinoDatePicker(
+                              mode: CupertinoDatePickerMode.time,
+                              initialDateTime: DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  16,
+                                  0),
+                              onDateTimeChanged: (value) {
+                                setState(() {
+                                  times[2][0] = value.hour.toString();
+                                  times[2][1] = value.minute.toString();
+                                  StorageService().write('times', times);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.info, color: Colors.blue),
+                            title: Text(
+                              'Please select the time for your fourth dose. (Bedtime)',
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            child: CupertinoDatePicker(
+                              mode: CupertinoDatePickerMode.time,
+                              initialDateTime: DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  19,
+                                  0),
+                              onDateTimeChanged: (value) {
+                                setState(() {
+                                  times[3][0] = value.hour.toString();
+                                  times[3][1] = value.minute.toString();
+                                  StorageService().write('times', times);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
 
-          ElevatedButton(
-            onPressed: () {
-              // FIRST TIME SET
-              NotificationService().scheduleNotification(
-                  scheduledNotificationDateTime: DateTime(
-                      int.parse(date[0]),
-                      int.parse(date[1]),
-                      int.parse(date[2]),
-                      int.parse(times[0][0]),
-                      int.parse(times[0][1])),
-                  title: "It's time for your first dose of PYLERA!",
-                  body: 'Take 3 capsules of PYLERA with a full glass of water.',
-                  payLoad: 'PYLERA');
-              setState(() {
-                // show next time
-                timeSet = true;
-                StorageService().write('timeSet', true);
-              });
-            },
-            child: Text('Set Date and Time'),
-          ),
+          (_tabController.index < 3)
+              ? ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _tabController.index++;
+                    });
+                  },
+                  child: Text('Next'),
+                )
+              : ElevatedButton(
+                  onPressed: () {
+                    // schedule notifications
+                    scheduleNotifications(date, times);
+                    setState(() {
+                      // show next time
+                      _tabController.index = 0;
+                      timeSet = true;
+                      StorageService().write('timeSet', true);
+                    });
+                  },
+                  child: Text('Schedule Dosage Reminders'),
+                ),
+
           SizedBox(height: 16.0),
         ],
       ),
@@ -497,5 +642,51 @@ class _SchedulePageState extends State<SchedulePage> {
     // Add leading zero to minutes
     final minuteStr = (minute < 10) ? '0$minute' : '$minute';
     return '$hour12:$minuteStr $amPm';
+  }
+}
+
+scheduleNotifications(List day, List times) {
+  // 1- Inform patients that each dose of PYLERA includes 3 capsules. All 3 capsules should be taken 4 times a day (after meals and at bedtime) for 10 days.
+  // 2- One omeprazole 20 mg capsule should be taken twice a day with PYLERA at the 1st and 3rd time for 10 days. send omeprazole reminder at 1st and 3rd time in the same notification
+  // loop through 10 days starting from day[0], day[1], day[2]
+  for (int i = 0; i < 10; i++) {
+    // loop through times
+    for (int j = 0; j < times.length; j++) {
+      // schedule notification
+      String doseNo = (j == 0)
+          ? 'first'
+          : (j == 1)
+              ? 'second'
+              : (j == 2)
+                  ? 'third'
+                  : 'fourth';
+      NotificationService().scheduleNotification(
+          scheduledNotificationDateTime: DateTime(
+                  int.parse(day[0]),
+                  int.parse(day[1]),
+                  int.parse(day[2]),
+                  int.parse(times[j][0]),
+                  int.parse(times[j][1]))
+              .add(Duration(days: i)),
+          title: "It's time for your $doseNo dose of PYLERA!",
+          body: 'Take 3 capsules of PYLERA with a full glass of water.',
+          payLoad: 'PYLERA');
+      // schedule omeprazole reminder
+      if (j == 0 || j == 2) {
+        String doseNo = (j == 0) ? 'first' : 'second';
+        NotificationService().scheduleNotification(
+            scheduledNotificationDateTime: DateTime(
+                    int.parse(day[0]),
+                    int.parse(day[1]),
+                    int.parse(day[2]),
+                    int.parse(times[j][0]),
+                    int.parse(times[j][1]))
+                .add(Duration(days: i)),
+            title: "It's time for your $doseNo dose of Omeprazole!",
+            body:
+                'Take 1 capsule of Omeprazole 20mg with a full glass of water.',
+            payLoad: 'Omeprazole');
+      }
+    }
   }
 }
