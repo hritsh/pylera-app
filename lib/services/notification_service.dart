@@ -56,4 +56,8 @@ class NotificationService {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
   }
+
+  Future cancelAllNotifications() async {
+    return notificationsPlugin.cancelAll();
+  }
 }

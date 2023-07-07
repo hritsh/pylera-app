@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pylera_app/services/notification_service.dart';
 import 'package:pylera_app/services/storage_service.dart';
+import 'package:timezone/timezone.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -13,6 +14,12 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   bool reminderSet = StorageService().read('reminderSet') ?? false;
   bool timeSet = StorageService().read('timeSet') ?? false;
+  List date = StorageService().read('date') ??
+      [
+        DateTime.now().year.toString(),
+        DateTime.now().month.toString(),
+        DateTime.now().day.toString()
+      ];
   List time = StorageService().read('time') ?? ['09', '00'];
   List times = StorageService().read('times') ??
       [
@@ -55,7 +62,7 @@ class _SchedulePageState extends State<SchedulePage> {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-                'Reminders set for ${_formatTime(int.parse(time[0] ?? '00'), int.parse(time[1] ?? '00'))}, '),
+                'Reminders set for ${_formatTime(int.parse(time[0] ?? '00'), int.parse(time[1] ?? '00'))}, starting from ${date[2]}/${date[1]}/${date[0]}'),
           ),
           Divider(),
           ListTile(
@@ -140,7 +147,7 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
           Divider(),
           ListTile(
-            title: Text('Cancel Reminder'),
+            title: Text('Cancel Reminders'),
             trailing: IconButton(
               icon: Icon(Icons.cancel),
               onPressed: () {
@@ -152,8 +159,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   StorageService().write('timeSet', false);
                   StorageService().write('time', ['09', '00']);
 
-                  // Cancel any scheduled notifications
-                  // using a notification plugin, e.g. flutter_local_notifications
+                  NotificationService().cancelAllNotifications();
                 });
               },
             ),
@@ -230,7 +236,11 @@ class _SchedulePageState extends State<SchedulePage> {
                 setState(() {
                   time[0] = value.hour.toString();
                   time[1] = value.minute.toString();
+                  date[0] = value.year.toString();
+                  date[1] = value.month.toString();
+                  date[2] = value.day.toString();
                   StorageService().write('time', time);
+                  StorageService().write('date', date);
                 });
               },
             ),
@@ -458,18 +468,11 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   String _formatTime(int hour, int minute) {
-    String hourStr = hour.toString();
-    String minuteStr = minute.toString();
-    if (hour < 10) hourStr = '0$hourStr';
-    if (minute < 10) minuteStr = '0$minuteStr';
-
-    if (hour == 0) hourStr = '12';
-
-    if (hour < 12) {
-      return '$hourStr:$minuteStr AM';
-    } else {
-      hourStr = (hour - 12).toString();
-      return '$hourStr:$minuteStr PM';
-    }
+    // Convert to 12 hour format
+    final hour12 = (hour > 12) ? hour - 12 : hour;
+    final amPm = (hour >= 12) ? 'PM' : 'AM';
+    // Add leading zero to minutes
+    final minuteStr = (minute < 10) ? '0$minute' : '$minute';
+    return '$hour12:$minuteStr $amPm';
   }
 }
