@@ -14,13 +14,17 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   bool reminderSet = StorageService().read('reminderSet') ?? false;
   bool timeSet = StorageService().read('timeSet') ?? false;
-  List date = StorageService().read('date') ??
-      [
-        DateTime.now().year.toString(),
-        DateTime.now().month.toString(),
-        DateTime.now().day.toString()
-      ];
-  List time = StorageService().read('time') ?? ['09', '00'];
+  List date = [
+    DateTime.now().year.toString(),
+    DateTime.now().month.toString(),
+    (DateTime.now().day + 1).toString()
+  ];
+  List endDate = [
+    DateTime.now().year.toString(),
+    DateTime.now().month.toString(),
+    (DateTime.now().day + 10).toString()
+  ];
+  // List time = StorageService().read('time') ?? ['09', '00'];
   List times = StorageService().read('times') ??
       [
         ['10', '00'],
@@ -62,7 +66,7 @@ class _SchedulePageState extends State<SchedulePage> {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-                'Reminders set for ${_formatTime(int.parse(time[0] ?? '00'), int.parse(time[1] ?? '00'))}, starting from ${date[2]}/${date[1]}/${date[0]}'),
+                'Reminders set for ${times.map((e) => _formatTime(int.parse(e[0]), int.parse(e[1]))).toList().join(', ')} daily, starting from ${date[2]}/${date[1]}/${date[0]} till ${endDate[2]}/${endDate[1]}/${endDate[0]}'),
           ),
           Divider(),
           ListTile(
@@ -154,10 +158,15 @@ class _SchedulePageState extends State<SchedulePage> {
                 setState(() {
                   reminderSet = false;
                   timeSet = false;
-                  time = ['09', '00'];
+                  times = [
+                    ['10', '00'],
+                    ['13', '00'],
+                    ['16', '00'],
+                    ['19', '00']
+                  ];
                   StorageService().write('reminderSet', false);
                   StorageService().write('timeSet', false);
-                  StorageService().write('time', ['09', '00']);
+                  StorageService().write('times', times);
 
                   NotificationService().cancelAllNotifications();
                 });
@@ -231,16 +240,21 @@ class _SchedulePageState extends State<SchedulePage> {
             child: CupertinoDatePicker(
               mode: CupertinoDatePickerMode.dateAndTime,
               minimumDate: DateTime.now(),
-              initialDateTime: DateTime.now(),
+              initialDateTime: DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day + 1, 10, 0),
               onDateTimeChanged: (value) {
                 setState(() {
-                  time[0] = value.hour.toString();
-                  time[1] = value.minute.toString();
+                  times[0][0] = value.hour.toString();
+                  times[0][1] = value.minute.toString();
                   date[0] = value.year.toString();
                   date[1] = value.month.toString();
                   date[2] = value.day.toString();
-                  StorageService().write('time', time);
+                  endDate[0] = value.year.toString();
+                  endDate[1] = value.month.toString();
+                  endDate[2] = (value.day + 9).toString();
+                  StorageService().write('times', times);
                   StorageService().write('date', date);
+                  StorageService().write('endDate', endDate);
                 });
               },
             ),
@@ -248,13 +262,21 @@ class _SchedulePageState extends State<SchedulePage> {
 
           ElevatedButton(
             onPressed: () {
+              // FIRST TIME SET
+              NotificationService().scheduleNotification(
+                  scheduledNotificationDateTime: DateTime(
+                      int.parse(date[0]),
+                      int.parse(date[1]),
+                      int.parse(date[2]),
+                      int.parse(times[0][0]),
+                      int.parse(times[0][1])),
+                  title: "It's time for your first dose of PYLERA!",
+                  body: 'Take 3 capsules of PYLERA with a full glass of water.',
+                  payLoad: 'PYLERA');
               setState(() {
+                // show next time
                 timeSet = true;
                 StorageService().write('timeSet', true);
-                NotificationService().scheduleNotification(
-                    scheduledNotificationDateTime:
-                        DateTime.now().add(Duration(seconds: 5)),
-                    title: "hello");
               });
             },
             child: Text('Set Date and Time'),
@@ -362,30 +384,31 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
           onPressed: () {
             if (hasReadWarnings) {
-              setState(() {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Important Dosage Information'),
-                      content: SingleChildScrollView(
-                        child: _dosageInfo(),
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Important Dosage Information'),
+                    content: SingleChildScrollView(
+                      child: _dosageInfo(),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
                       ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-                reminderSet = true;
-                StorageService().write('reminderSet', true);
-                hasReadWarnings = false;
-              });
+                    ],
+                  );
+                },
+              ).then((value) => {
+                    setState(() {
+                      reminderSet = true;
+                      StorageService().write('reminderSet', true);
+                      hasReadWarnings = false;
+                    })
+                  });
             } else {
               showDialog(
                 context: context,

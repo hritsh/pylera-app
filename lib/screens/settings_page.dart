@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pylera_app/screens/main_screen.dart';
+import 'package:pylera_app/services/notification_service.dart';
 import 'package:pylera_app/services/storage_service.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -56,6 +57,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 setState(() {
                   reminderSet = value;
                 });
+                if (!value) {
+                  NotificationService().cancelAllNotifications();
+                }
                 StorageService().write('reminderSet', value);
               },
             ),
@@ -111,6 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing: Icon(Icons.logout, color: Colors.red),
             onTap: () {
               StorageService().clear();
+              NotificationService().cancelAllNotifications();
               Get.offAll(() => MainScreen());
             },
           )
