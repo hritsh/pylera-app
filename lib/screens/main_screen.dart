@@ -16,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    Get.put<_MainScreenState>(this);
   }
 
   @override
@@ -59,5 +60,36 @@ class _MainScreenState extends State<MainScreen> {
         unselectedFontSize: 12,
       ),
     );
+  }
+
+  navigateTo(String page) {
+    switch (page) {
+      case 'home':
+        setState(() {
+          currentIndex.value = 0;
+        });
+        break;
+      case 'schedule':
+        setState(() {
+          currentIndex.value = 1;
+        });
+        break;
+      case 'settings':
+        setState(() {
+          currentIndex.value = 2;
+        });
+        break;
+      default:
+        setState(() {
+          currentIndex.value = 0;
+        });
+    }
+  }
+}
+
+class NavigationService {
+  static void navigateTo(String page) {
+    final controller = Get.find<_MainScreenState>();
+    controller.navigateTo(page);
   }
 }

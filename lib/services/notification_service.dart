@@ -44,6 +44,8 @@ class NotificationService {
       String? payLoad,
       required DateTime scheduledNotificationDateTime}) async {
     try {
+      // return if time is in the past
+      if (scheduledNotificationDateTime.isBefore(DateTime.now())) return;
       return notificationsPlugin.zonedSchedule(
           id,
           title,

@@ -35,7 +35,27 @@ class _SchedulePageState extends State<SchedulePage>
         ['19', '00']
       ];
   bool hasReadWarnings = false;
+
+  int daysPassed = 0;
+
+  List pyleraTaken = StorageService().read('pyleraTaken') ??
+      List.generate(10, (_) => List.filled(4, false));
+  List omeprazoleTaken = StorageService().read('omeprazoleTaken') ??
+      List.generate(10, (_) => List.filled(2, false));
+
   late TabController _tabController;
+
+  getDaysPassed() {
+    DateTime storedDate = DateTime(
+      int.parse(date[0]),
+      int.parse(date[1]),
+      int.parse(date[2]),
+    );
+    DateTime today = DateTime.now();
+    setState(() {
+      daysPassed = today.difference(storedDate).inDays;
+    });
+  }
 
   @override
   void initState() {
@@ -51,13 +71,12 @@ class _SchedulePageState extends State<SchedulePage>
 
   @override
   Widget build(BuildContext context) {
+    getDaysPassed();
     return Scaffold(
       appBar: AppBar(title: const Text('Schedule Dose Reminders')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             const SizedBox(height: 16.0),
             (reminderSet)
@@ -75,6 +94,7 @@ class _SchedulePageState extends State<SchedulePage>
     return Card(
       child: Column(
         children: [
+          SizedBox(height: 12),
           ListTile(
             title: const Text(
               'Dosage Reminders on',
@@ -178,31 +198,136 @@ class _SchedulePageState extends State<SchedulePage>
           ),
           const Divider(),
 
+          // taken today checklist card showing each individual dose with a checkbox and a time beside it (4 for pylera and 2 for omeprazole)
+          ListTile(
+            title: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Taken Today',
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Please check the doses you have taken today.',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    SizedBox(height: 8.0),
+                    for (int i = 0; i < 4; i++)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CheckboxListTile(
+                              title: Text(
+                                'Pylera Dose ${i + 1}',
+                                style: TextStyle(fontSize: 16.0),
+                              ),
+                              value: pyleraTaken[daysPassed][i],
+                              onChanged: (value) {
+                                setState(() {
+                                  pyleraTaken[daysPassed][i] = value!;
+                                  StorageService()
+                                      .write('pyleraTaken', pyleraTaken);
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            _formatTime(
+                                int.parse(times[i][0]), int.parse(times[i][1])),
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    for (int i = 0; i < 2; i++)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CheckboxListTile(
+                              title: Text(
+                                'Omeprazole Dose ${i + 1}',
+                                style: TextStyle(fontSize: 16.0),
+                              ),
+                              value: omeprazoleTaken[daysPassed][i],
+                              onChanged: (value) {
+                                setState(() {
+                                  omeprazoleTaken[daysPassed][i] = value!;
+                                  StorageService().write(
+                                      'omeprazoleTaken', omeprazoleTaken);
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            _formatTime(int.parse(times[i + 2][0]),
+                                int.parse(times[i + 2][1])),
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          const Divider(),
           ListTile(
             title: const Text('Cancel Reminders'),
             trailing: IconButton(
-              icon: const Icon(Icons.cancel),
+              icon: const Icon(Icons.cancel, color: Colors.red),
               onPressed: () {
-                setState(() {
-                  reminderSet = false;
-                  timeSet = false;
-                  times = [
-                    ['10', '00'],
-                    ['13', '00'],
-                    ['16', '00'],
-                    ['19', '00']
-                  ];
-                  StorageService().write('reminderSet', false);
-                  StorageService().write('timeSet', false);
-                  StorageService().write('times', times);
-                  StorageService().remove('date');
-
-                  NotificationService().cancelAllNotifications();
-                });
+                // are you sure?
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Cancel Reminders'),
+                      content: const Text(
+                          'Are you sure you want to cancel all reminders?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('No'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            // cancel all notifications
+                            NotificationService().cancelAllNotifications();
+                            // update reminderSet
+                            setState(() {
+                              reminderSet = false;
+                              timeSet = false;
+                              times = [
+                                ['10', '00'],
+                                ['13', '00'],
+                                ['16', '00'],
+                                ['19', '00']
+                              ];
+                              StorageService().write('reminderSet', false);
+                              StorageService().write('timeSet', false);
+                              StorageService().write('times', times);
+                              StorageService().remove('date');
+                              StorageService().remove('endDate');
+                              StorageService().remove('pyleraTaken');
+                              StorageService().remove('omeprazoleTaken');
+                            });
+                          },
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ),
-          const SizedBox(height: 16.0),
         ],
       ),
     );
@@ -444,6 +569,9 @@ class _SchedulePageState extends State<SchedulePage>
                       _tabController.index = 0;
                       timeSet = true;
                       StorageService().write('timeSet', true);
+                      StorageService().write('times', times);
+                      StorageService().write('date', date);
+                      StorageService().write('endDate', endDate);
                     });
                   },
                   child: const Text('Schedule Dosage Reminders'),
