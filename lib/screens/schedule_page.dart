@@ -187,6 +187,7 @@ class _SchedulePageState extends State<SchedulePage>
               },
             ),
           ),
+          const SizedBox(height: 16.0),
         ],
       ),
     );
@@ -416,6 +417,12 @@ class _SchedulePageState extends State<SchedulePage>
                   onPressed: () {
                     // schedule notifications
                     scheduleNotifications(date, times);
+                    NotificationService().showNotification(
+                        title: 'Reminder Set',
+                        body:
+                            'You will get reminders for PYLERA and Omeprazole as per the times you have set.',
+                        payLoad: 'Reminder Set');
+
                     setState(() {
                       // show next time
                       _tabController.index = 0;
@@ -502,7 +509,7 @@ class _SchedulePageState extends State<SchedulePage>
       children: [
         Expanded(child: Container()),
         const Text(
-          'I have read and understood the warnings',
+          'I have read & understood the warnings',
           style: TextStyle(fontSize: 16.0),
         ),
         const SizedBox(width: 8.0),
@@ -649,6 +656,8 @@ scheduleNotifications(List day, List times) {
   // 1- Inform patients that each dose of PYLERA includes 3 capsules. All 3 capsules should be taken 4 times a day (after meals and at bedtime) for 10 days.
   // 2- One omeprazole 20 mg capsule should be taken twice a day with PYLERA at the 1st and 3rd time for 10 days. send omeprazole reminder at 1st and 3rd time in the same notification
   // loop through 10 days starting from day[0], day[1], day[2]
+  print(day);
+  print(times);
   for (int i = 0; i < 10; i++) {
     // loop through times
     for (int j = 0; j < times.length; j++) {
@@ -660,7 +669,9 @@ scheduleNotifications(List day, List times) {
               : (j == 2)
                   ? 'third'
                   : 'fourth';
-      NotificationService().scheduleNotification(
+      // check for omeprazole reminder
+      if (j == 0 || j == 2) {
+        NotificationService().scheduleNotification(
           scheduledNotificationDateTime: DateTime(
                   int.parse(day[0]),
                   int.parse(day[1]),
@@ -668,25 +679,26 @@ scheduleNotifications(List day, List times) {
                   int.parse(times[j][0]),
                   int.parse(times[j][1]))
               .add(Duration(days: i)),
-          title: "It's time for your $doseNo dose of PYLERA!",
-          body: 'Take 3 capsules of PYLERA with a full glass of water.',
-          payLoad: 'PYLERA');
-      // schedule omeprazole reminder
-      if (j == 0 || j == 2) {
-        String doseNo = (j == 0) ? 'first' : 'second';
+          id: int.parse(i.toString() + j.toString()),
+          title: "It's time for your dose of PYLERA & Omeprazole!",
+          body:
+              'Take 3 capsules of PYLERA & 1 capsule of Omeprazole with a full glass of water.',
+        );
+      } else {
         NotificationService().scheduleNotification(
-            scheduledNotificationDateTime: DateTime(
-                    int.parse(day[0]),
-                    int.parse(day[1]),
-                    int.parse(day[2]),
-                    int.parse(times[j][0]),
-                    int.parse(times[j][1]))
-                .add(Duration(days: i)),
-            title: "It's time for your $doseNo dose of Omeprazole!",
-            body:
-                'Take 1 capsule of Omeprazole 20mg with a full glass of water.',
-            payLoad: 'Omeprazole');
+          scheduledNotificationDateTime: DateTime(
+                  int.parse(day[0]),
+                  int.parse(day[1]),
+                  int.parse(day[2]),
+                  int.parse(times[j][0]),
+                  int.parse(times[j][1]))
+              .add(Duration(days: i)),
+          id: int.parse(i.toString() + j.toString()),
+          title: "It's time for your dose of PYLERA!",
+          body: 'Take 3 capsules of PYLERA with a full glass of water.',
+        );
       }
     }
   }
+  return;
 }

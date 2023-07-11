@@ -21,8 +21,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool reminderSet = StorageService().read('reminderSet') ?? false;
   bool timeSet = StorageService().read('timeSet') ?? false;
   // List time = StorageService().read('time') ?? ['09', '00'];
-  List date = StorageService().read('date') ?? null;
-  List endDate = StorageService().read('endDate') ?? null;
+  // List date = StorageService().read('date') ?? null;
+  // List endDate = StorageService().read('endDate') ?? null;
 
   updateLanguage(Locale locale) {
     Get.back();

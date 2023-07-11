@@ -26,6 +26,9 @@ class LocaleString extends Translations {
           'time_set': 'Time Set',
           'current_language': 'English',
           'start_treatment': 'Dosage Schedule',
+          'first_name': 'First Name',
+          'last_name': 'Last Name',
+          'save': 'Save',
         },
 
         // Arabic
