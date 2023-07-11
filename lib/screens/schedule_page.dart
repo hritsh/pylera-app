@@ -286,8 +286,8 @@ class _SchedulePageState extends State<SchedulePage>
                             ),
                           ),
                           Text(
-                            _formatTime(int.parse(times[i + 2][0]),
-                                int.parse(times[i + 2][1])),
+                            _formatTime(
+                                int.parse(times[i][0]), int.parse(times[i][1])),
                             style: TextStyle(fontSize: 16.0),
                           ),
                         ],
@@ -596,6 +596,9 @@ class _SchedulePageState extends State<SchedulePage>
                       StorageService().write('times', times);
                       StorageService().write('date', date);
                       StorageService().write('endDate', endDate);
+                      StorageService().write('pyleraTaken', pyleraTaken);
+                      StorageService()
+                          .write('omeprazoleTaken', omeprazoleTaken);
                     });
                   },
                   child: const Text('Schedule Dosage Reminders'),

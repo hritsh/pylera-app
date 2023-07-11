@@ -135,7 +135,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (builder) {
         return AlertDialog(
-          title: Center(child: Text('choose_your_language'.tr)),
+          title: Center(child: Text("Choose Your Language")),
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.separated(
@@ -146,7 +146,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: GestureDetector(
                     child: Center(
                       child: Text(
-                        locale[index]['flag'] + " " + locale[index]['name'],
+                        locale[index]['name'],
                         style: const TextStyle(fontSize: 20),
                       ),
                     ),
