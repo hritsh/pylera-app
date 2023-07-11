@@ -64,4 +64,8 @@ class NotificationService {
   Future cancelAllNotifications() async {
     return notificationsPlugin.cancelAll();
   }
+
+  Future cancelNotification(int id) async {
+    return notificationsPlugin.cancel(id);
+  }
 }

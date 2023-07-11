@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pylera_app/services/notification_service.dart';
 import 'package:pylera_app/services/storage_service.dart';
 import 'package:timezone/timezone.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -164,6 +165,19 @@ class _SchedulePageState extends State<SchedulePage>
             ),
           ),
           const Divider(),
+          // Add to Calendar
+          ListTile(
+            title: const Text('Add to Calendar'),
+            subtitle: const Text('Add the schedule to your calendar app.'),
+            trailing: IconButton(
+              icon: const Icon(Icons.calendar_today),
+              onPressed: () {
+                addAllToCalendar(date, endDate, times);
+              },
+            ),
+          ),
+          const Divider(),
+
           ListTile(
             title: const Text('Cancel Reminders'),
             trailing: IconButton(
@@ -703,4 +717,40 @@ scheduleNotifications(List day, List times) {
     }
   }
   return;
+}
+
+Future addToCalendar(List date, List endDate, List time, String title,
+    String description) async {
+  final Event event = Event(
+    title: title,
+    description: description,
+    startDate: DateTime(int.parse(date[0]), int.parse(date[1]),
+        int.parse(date[2]), int.parse(time[0]), int.parse(time[1])),
+    endDate: DateTime(int.parse(date[0]), int.parse(date[1]),
+        int.parse(date[2]), int.parse(time[0]), int.parse(time[1])),
+    recurrence: Recurrence(
+      frequency: Frequency.daily,
+      interval: 1,
+      endDate: DateTime(
+          int.parse(endDate[0]), int.parse(endDate[1]), int.parse(endDate[2])),
+    ),
+  );
+  return Add2Calendar.addEvent2Cal(event);
+}
+
+addAllToCalendar(List date, List endDate, List times) {
+  List info = [
+    {
+      "title": "It's time for your dose of PYLERA & Omeprazole!",
+      "description":
+          'Take 3 capsules of PYLERA & 1 capsule of Omeprazole with a full glass of water.',
+    },
+    {
+      "title": "It's time for your dose of PYLERA!",
+      "description": 'Take 3 capsules of PYLERA with a full glass of water.',
+    }
+  ];
+  addToCalendar(
+          date, endDate, times[0], info[0]['title'], info[0]['description'])
+      .then((value) => {print("hello")});
 }
