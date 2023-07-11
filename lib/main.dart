@@ -6,10 +6,13 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pylera_app/services/storage_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // Initialize splash screen
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   // Initialize notification service
-  WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
   tz.initializeTimeZones();
   // Initialize storage service
@@ -17,7 +20,19 @@ void main() {
   GetStorage.init().then((value) => runApp(MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    Future.delayed(Duration(seconds: 1))
+        .then((value) => FlutterNativeSplash.remove());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
