@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
   setUp() {
     if (StorageService().read('locale') == null) {
-      updateLanguage(Get.deviceLocale!);
+      // updateLanguage(Get.deviceLocale!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         buildLanguageDialog(context).then((value) {
           buildNameDialog(context);

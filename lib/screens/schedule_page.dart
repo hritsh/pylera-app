@@ -116,20 +116,30 @@ class _SchedulePageState extends State<SchedulePage>
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text('PYLERA Dos and Don\'ts'),
-                      content: const SingleChildScrollView(
-                        child: ListBody(
-                          children: [
-                            Text('• Each dose of PYLERA includes 3 capsules.'),
-                            Text(
-                                '• All 3 capsules should be taken 4 times a day (after meals and at bedtime) for 10 days.'),
-                            Text(
-                                '• One omeprazole 20 mg capsule should be taken twice a day with PYLERA after the morning and evening meal for 10 days.'),
-                            Text(
-                                '• If a dose is missed, advise patient not to make up the dose, but to continue the normal dosing schedule until medication is gone. Patients should not take double doses. If more than 4 doses are missed, advise the patient to contact their health-care provider.'),
-                            Text(
-                                '• Skipping doses or not completing the full course of therapy may decrease the effectiveness of the immediate treatment and increase the likelihood that bacteria will develop resistance and will not be treatable by PYLERA or other antibacterial drugs in the future.'),
-                          ],
-                        ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title: const Text('Take 3 capsules 4 times a day'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title:
+                                const Text('Take omeprazole 20mg twice a day'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title: const Text(
+                                'If a dose is missed, continue normal dosing schedule'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title: const Text(
+                                'Skipping doses or not completing full course of therapy may decrease effectiveness'),
+                          ),
+                        ],
                       ),
                       actions: [
                         TextButton(
@@ -158,17 +168,31 @@ class _SchedulePageState extends State<SchedulePage>
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text('Pylera-related Advices'),
-                      content: const SingleChildScrollView(
-                        child: ListBody(
-                          children: [
-                            Text(
-                                '• Avoid exposure to the sun or sun lamps. (Photosensitivity)'),
-                            Text(
-                                '• Bismuth absorbs x-rays and may interfere with x-ray diagnostic procedures of the gastrointestinal tract.'),
-                            Text('• Darkening of the Tongue and/or Stool.'),
-                            Text('• Drug interactions and Warnings'),
-                          ],
-                        ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title: const Text(
+                                'Avoid exposure to the sun or sun lamps. (Photosensitivity)'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title: const Text(
+                                'Bismuth absorbs x-rays and may interfere with x-ray diagnostic procedures of the gastrointestinal tract.'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title: const Text(
+                                'Darkening of the tongue and/or stool'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.fiber_manual_record),
+                            title: const Text(
+                                'Check for drug interactions and warnings'),
+                          ),
+                        ],
                       ),
                       actions: [
                         TextButton(

@@ -115,16 +115,16 @@ class _SettingsPageState extends State<SettingsPage> {
               buildLanguageDialog(context);
             },
           ),
-          // const Divider(color: Colors.grey, indent: 15, endIndent: 15),
-          // ListTile(
-          //   title: Text('logout'.tr, style: const TextStyle(color: Colors.red)),
-          //   trailing: const Icon(Icons.logout, color: Colors.red),
-          //   onTap: () {
-          //     StorageService().clear();
-          //     NotificationService().cancelAllNotifications();
-          //     NavigationService.navigateTo('home');
-          //   },
-          // )
+          const Divider(color: Colors.grey, indent: 15, endIndent: 15),
+          ListTile(
+            title: Text('logout'.tr, style: const TextStyle(color: Colors.red)),
+            trailing: const Icon(Icons.logout, color: Colors.red),
+            onTap: () {
+              StorageService().clear();
+              NotificationService().cancelAllNotifications();
+              NavigationService.navigateTo('home');
+            },
+          )
         ],
       ),
     );
