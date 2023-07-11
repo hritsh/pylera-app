@@ -181,6 +181,7 @@ class _SchedulePageState extends State<SchedulePage>
                   StorageService().write('reminderSet', false);
                   StorageService().write('timeSet', false);
                   StorageService().write('times', times);
+                  StorageService().remove('date');
 
                   NotificationService().cancelAllNotifications();
                 });
@@ -281,6 +282,7 @@ class _SchedulePageState extends State<SchedulePage>
                             height: 200,
                             child: CupertinoDatePicker(
                               mode: CupertinoDatePickerMode.dateAndTime,
+                              showDayOfWeek: true,
                               minimumDate: DateTime.now(),
                               initialDateTime: DateTime(
                                   DateTime.now().year,
