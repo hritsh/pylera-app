@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## Demo of App
+
+https://github.com/hritsh/pylera-app/assets/65954042/ba667f2c-0fe1-46a9-887c-dfbe372c724b
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
